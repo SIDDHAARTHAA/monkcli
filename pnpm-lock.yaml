@@ -23,6 +23,15 @@ importers:
 
   apps/cli:
     dependencies:
+      '@monkcli/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      '@monkcli/engine':
+        specifier: workspace:*
+        version: link:../../packages/engine
+      '@monkcli/storage-local':
+        specifier: workspace:*
+        version: link:../../packages/storage-local
       ink:
         specifier: ^6.8.0
         version: 6.8.0(@types/react@19.2.14)(react@19.2.4)
@@ -36,9 +45,17 @@ importers:
 
   packages/contracts: {}
 
-  packages/engine: {}
+  packages/engine:
+    dependencies:
+      '@monkcli/contracts':
+        specifier: workspace:*
+        version: link:../contracts
 
-  packages/storage-local: {}
+  packages/storage-local:
+    dependencies:
+      '@monkcli/contracts':
+        specifier: workspace:*
+        version: link:../contracts
 
 packages:
 

@@ -1,17 +1,14 @@
 {
   "name": "monkcli",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "vitest",
-    "dev": "pnpm --filter @monkcli/cli dev"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
   "packageManager": "pnpm@10.28.1",
-  "private": "true",
+  "scripts": {
+    "dev": "pnpm --filter @monkcli/cli dev",
+    "build": "pnpm -r --if-present build",
+    "test": "vitest"
+  },
   "devDependencies": {
     "@types/node": "^25.3.3",
     "tsx": "^4.21.0",

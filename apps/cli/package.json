@@ -4,9 +4,12 @@
   "type": "module",
   "scripts": {
     "dev": "tsx src/index.tsx",
-    "build": "tsc -p tsconfig.json"
+    "build": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
+    "@monkcli/contracts": "workspace:*",
+    "@monkcli/engine": "workspace:*",
+    "@monkcli/storage-local": "workspace:*",
     "ink": "^6.8.0",
     "react": "^19.2.4"
   },
