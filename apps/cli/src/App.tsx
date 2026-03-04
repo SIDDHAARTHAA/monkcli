@@ -1,5 +1,5 @@
 import React from "react";
-import { useApp, useInput } from "ink";
+import { Box, useApp, useInput, useStdout } from "ink";
 import { useTypingController } from "./hooks/useTypingController";
 import {
   ErrorScreen,
@@ -12,7 +12,22 @@ import {
 
 export function App(): React.JSX.Element {
   const { exit } = useApp();
+  const { stdout } = useStdout();
+  const terminalWidth = stdout.columns ?? 120;
+  const terminalHeight = stdout.rows ?? 30;
   const controller = useTypingController();
+
+  const safeWidth = Math.max(40, terminalWidth);
+  const safeHeight = Math.max(12, terminalHeight);
+  const panelWidth = Math.max(36, Math.min(safeWidth - 2, 120));
+
+  const renderCentered = (content: React.JSX.Element): React.JSX.Element => (
+    <Box width={safeWidth} height={safeHeight} justifyContent="center" alignItems="center">
+      <Box width={panelWidth} flexDirection="column">
+        {content}
+      </Box>
+    </Box>
+  );
 
   useInput((input, key) => {
     if ((key.ctrl && input === "c") || input === "q") {
@@ -76,15 +91,15 @@ export function App(): React.JSX.Element {
   });
 
   if (controller.phase === "loading") {
-    return <LoadingScreen />;
+    return renderCentered(<LoadingScreen />);
   }
 
   if (controller.phase === "error") {
-    return <ErrorScreen errorMessage={controller.errorMessage} />;
+    return renderCentered(<ErrorScreen errorMessage={controller.errorMessage} />);
   }
 
   if (controller.phase === "menu") {
-    return (
+    return renderCentered(
       <MenuScreen
         language={controller.language}
         mode={controller.mode}
@@ -93,24 +108,24 @@ export function App(): React.JSX.Element {
         dictionarySize={controller.dictionarySize}
         historyCount={controller.historyCount}
         engineDataDir={controller.engineDataDir}
-      />
+      />,
     );
   }
 
   if (controller.phase === "saving") {
-    return <SavingScreen />;
+    return renderCentered(<SavingScreen />);
   }
 
   if (controller.phase === "result" && controller.lastResult) {
-    return (
+    return renderCentered(
       <ResultScreen
         result={controller.lastResult}
         historyCount={controller.historyCount}
-      />
+      />,
     );
   }
 
-  return (
+  return renderCentered(
     <RunningScreen
       mode={controller.mode}
       remainingSeconds={controller.remainingSeconds}
@@ -118,6 +133,6 @@ export function App(): React.JSX.Element {
       targetText={controller.targetText}
       inputText={controller.inputText}
       extraTyped={controller.extraTyped}
-    />
+    />,
   );
 }

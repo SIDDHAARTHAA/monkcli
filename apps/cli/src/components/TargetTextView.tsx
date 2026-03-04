@@ -1,10 +1,9 @@
 import React from "react";
-import { Text } from "ink";
+import { Box, Text } from "ink";
 
 type WordRender = {
   targetWord: string;
   typedWord: string;
-  index: number;
   isCurrent: boolean;
 };
 
@@ -23,7 +22,7 @@ function renderCurrentWord(targetWord: string, typedWord: string, keyPrefix: str
   for (let i = 0; i <= maxLen; i++) {
     if (i === cursorAt) {
       nodes.push(
-        <Text key={`${keyPrefix}-cursor-${i}`} color="yellow" inverse>
+        <Text key={`${keyPrefix}-cursor-${i}`} color="yellow" inverse bold>
           |
         </Text>,
       );
@@ -37,13 +36,13 @@ function renderCurrentWord(targetWord: string, typedWord: string, keyPrefix: str
     if (typed !== undefined) {
       const isCorrect = typed === target;
       nodes.push(
-        <Text key={`${keyPrefix}-typed-${i}`} color={isCorrect ? "green" : "red"}>
+        <Text key={`${keyPrefix}-typed-${i}`} color={isCorrect ? "green" : "red"} bold>
           {typed}
         </Text>,
       );
     } else if (target !== undefined) {
       nodes.push(
-        <Text key={`${keyPrefix}-target-${i}`} color="cyan">
+        <Text key={`${keyPrefix}-target-${i}`} color="cyan" bold>
           {target}
         </Text>,
       );
@@ -62,7 +61,7 @@ function renderWordSegment(segment: WordRender, keyPrefix: string): React.JSX.El
 
   if (typedWord.length === 0) {
     return [
-      <Text key={`${keyPrefix}-future`} color="gray" dimColor>
+      <Text key={`${keyPrefix}-future`} color="gray" dimColor bold>
         {targetWord}
       </Text>,
     ];
@@ -70,7 +69,7 @@ function renderWordSegment(segment: WordRender, keyPrefix: string): React.JSX.El
 
   const isExact = typedWord === targetWord;
   return [
-    <Text key={`${keyPrefix}-past`} color={isExact ? "green" : "red"}>
+    <Text key={`${keyPrefix}-past`} color={isExact ? "green" : "red"} bold>
       {targetWord}
     </Text>,
   ];
@@ -81,7 +80,11 @@ export function TargetTextView(props: { targetText: string; inputText: string })
   const targetWords = targetText.split(" ").filter((w) => w.length > 0);
 
   if (targetWords.length === 0) {
-    return <Text color="gray">No target words</Text>;
+    return (
+      <Box width="100%" justifyContent="center">
+        <Text color="gray">No target words</Text>
+      </Box>
+    );
   }
 
   const typedWords = inputText.split(" ");
@@ -97,7 +100,7 @@ export function TargetTextView(props: { targetText: string; inputText: string })
   if (start > 0) {
     nodes.push(
       <Text key="ellipsis-start" color="gray" dimColor>
-        ... 
+        ...
       </Text>,
     );
   }
@@ -110,7 +113,6 @@ export function TargetTextView(props: { targetText: string; inputText: string })
       {
         targetWord,
         typedWord,
-        index: i,
         isCurrent: i === currentWordIndex,
       },
       `word-${i}`,
@@ -135,5 +137,9 @@ export function TargetTextView(props: { targetText: string; inputText: string })
     );
   }
 
-  return <Text>{nodes}</Text>;
+  return (
+    <Box width="100%" justifyContent="center">
+      <Text>{nodes}</Text>
+    </Box>
+  );
 }
