@@ -1,0 +1,6 @@
+{
+  "name": "@monkcli/contracts",
+  "private": true,
+  "type": "module",
+  "exports": "./src/index.ts"
+}
