@@ -1,85 +1,131 @@
 import React from "react";
 import { Box, Text } from "ink";
+import { COLORS_ENABLED, HIGH_CONTRAST } from "../theme";
 
-type WordRender = {
-  targetWord: string;
-  typedWord: string;
-  isCurrent: boolean;
+type StyledChar = {
+  char: string;
+  color?: "green" | "red" | "cyan" | "gray";
+  dimColor?: boolean;
+  bold?: boolean;
+  inverse?: boolean;
+  underline?: boolean;
 };
 
-function getCurrentWordIndex(inputText: string, maxIndex: number): number {
-  if (maxIndex <= 0) return 0;
-  if (inputText.length === 0) return 0;
-  const parts = inputText.split(" ");
-  return Math.min(maxIndex, Math.max(0, parts.length - 1));
+const LEFT_WINDOW = 28;
+const RIGHT_WINDOW = 52;
+
+function styleCorrect(char: string): StyledChar {
+  return {
+    char,
+    bold: true,
+  };
 }
 
-function renderCurrentWord(targetWord: string, typedWord: string, keyPrefix: string): React.JSX.Element[] {
-  const nodes: React.JSX.Element[] = [];
-  const maxLen = Math.max(targetWord.length, typedWord.length);
-  const cursorAt = typedWord.length;
-
-  for (let i = 0; i <= maxLen; i++) {
-    if (i === cursorAt) {
-      nodes.push(
-        <Text key={`${keyPrefix}-cursor-${i}`} color="yellow" inverse bold>
-          |
-        </Text>,
-      );
-    }
-
-    if (i === maxLen) continue;
-
-    const typed = typedWord[i];
-    const target = targetWord[i];
-
-    if (typed !== undefined) {
-      const isCorrect = typed === target;
-      nodes.push(
-        <Text key={`${keyPrefix}-typed-${i}`} color={isCorrect ? "green" : "red"} bold>
-          {typed}
-        </Text>,
-      );
-    } else if (target !== undefined) {
-      nodes.push(
-        <Text key={`${keyPrefix}-target-${i}`} color="cyan" bold>
-          {target}
-        </Text>,
-      );
-    }
-  }
-
-  return nodes;
+function styleIncorrect(char: string): StyledChar {
+  return {
+    char,
+    color: COLORS_ENABLED ? "red" : undefined,
+    bold: true,
+    inverse: HIGH_CONTRAST,
+    underline: true,
+  };
 }
 
-function renderWordSegment(segment: WordRender, keyPrefix: string): React.JSX.Element[] {
-  const { targetWord, typedWord, isCurrent } = segment;
+function styleUpcoming(char: string): StyledChar {
+  return {
+    char,
+    color: COLORS_ENABLED ? "gray" : undefined,
+    dimColor: !HIGH_CONTRAST,
+    bold: false,
+  };
+}
 
-  if (isCurrent) {
-    return renderCurrentWord(targetWord, typedWord, keyPrefix);
+function styleCurrent(char: string): StyledChar {
+  return {
+    char,
+    color: COLORS_ENABLED ? "cyan" : undefined,
+    bold: true,
+    underline: HIGH_CONTRAST,
+  };
+}
+
+function buildPastChars(targetText: string, inputText: string, pointer: number): StyledChar[] {
+  const start = Math.max(0, pointer - LEFT_WINDOW);
+  const typedSlice = inputText.slice(start, pointer);
+
+  const visible: StyledChar[] = [];
+  for (let i = 0; i < typedSlice.length; i++) {
+    const char = typedSlice[i] as string;
+    const absoluteIndex = start + i;
+
+    if (absoluteIndex < targetText.length) {
+      const isCorrect = char === targetText[absoluteIndex];
+      visible.push(isCorrect ? styleCorrect(char) : styleIncorrect(char));
+    } else {
+      visible.push(styleIncorrect(char));
+    }
   }
 
-  if (typedWord.length === 0) {
-    return [
-      <Text key={`${keyPrefix}-future`} color="gray" dimColor bold>
-        {targetWord}
-      </Text>,
-    ];
+  if (start > 0 && visible.length > 0) {
+    visible[0] = {
+      char: "…",
+      color: COLORS_ENABLED ? "gray" : undefined,
+      dimColor: !HIGH_CONTRAST,
+      bold: HIGH_CONTRAST,
+    };
   }
 
-  const isExact = typedWord === targetWord;
-  return [
-    <Text key={`${keyPrefix}-past`} color={isExact ? "green" : "red"} bold>
-      {targetWord}
-    </Text>,
-  ];
+  const padding: StyledChar[] = Array.from({ length: LEFT_WINDOW - visible.length }, () => ({
+    char: " ",
+  }));
+
+  return [...padding, ...visible];
+}
+
+function buildFutureChars(targetText: string, pointer: number): StyledChar[] {
+  const end = Math.min(targetText.length, pointer + RIGHT_WINDOW);
+
+  const visible: StyledChar[] = [];
+  for (let i = pointer; i < end; i++) {
+    const char = targetText[i] as string;
+    visible.push(i === pointer ? styleCurrent(char) : styleUpcoming(char));
+  }
+
+  if (end < targetText.length && visible.length > 0) {
+    visible[visible.length - 1] = {
+      char: "…",
+      color: COLORS_ENABLED ? "gray" : undefined,
+      dimColor: !HIGH_CONTRAST,
+      bold: HIGH_CONTRAST,
+    };
+  }
+
+  const padding: StyledChar[] = Array.from({ length: RIGHT_WINDOW - visible.length }, () => ({
+    char: " ",
+  }));
+
+  return [...visible, ...padding];
+}
+
+function renderChars(chars: StyledChar[], keyPrefix: string): React.JSX.Element[] {
+  return chars.map((entry, index) => (
+    <Text
+      key={`${keyPrefix}-${index}`}
+      color={entry.color}
+      dimColor={entry.dimColor}
+      bold={entry.bold}
+      inverse={entry.inverse}
+      underline={entry.underline}
+    >
+      {entry.char}
+    </Text>
+  ));
 }
 
 export function TargetTextView(props: { targetText: string; inputText: string }): React.JSX.Element {
   const { targetText, inputText } = props;
-  const targetWords = targetText.split(" ").filter((w) => w.length > 0);
 
-  if (targetWords.length === 0) {
+  if (!targetText || targetText.trim().length === 0) {
     return (
       <Box width="100%" justifyContent="center">
         <Text color="gray">No target words</Text>
@@ -87,59 +133,17 @@ export function TargetTextView(props: { targetText: string; inputText: string })
     );
   }
 
-  const typedWords = inputText.split(" ");
-  const currentWordIndex = getCurrentWordIndex(inputText, targetWords.length - 1);
-
-  const windowBefore = 5;
-  const windowAfter = 8;
-  const start = Math.max(0, currentWordIndex - windowBefore);
-  const end = Math.min(targetWords.length - 1, currentWordIndex + windowAfter);
-
-  const nodes: React.JSX.Element[] = [];
-
-  if (start > 0) {
-    nodes.push(
-      <Text key="ellipsis-start" color="gray" dimColor>
-        ...
-      </Text>,
-    );
-  }
-
-  for (let i = start; i <= end; i++) {
-    const targetWord = targetWords[i] as string;
-    const typedWord = typedWords[i] ?? "";
-
-    const segmentNodes = renderWordSegment(
-      {
-        targetWord,
-        typedWord,
-        isCurrent: i === currentWordIndex,
-      },
-      `word-${i}`,
-    );
-
-    nodes.push(...segmentNodes);
-
-    if (i < end) {
-      nodes.push(
-        <Text key={`space-${i}`}>
-          {" "}
-        </Text>,
-      );
-    }
-  }
-
-  if (end < targetWords.length - 1) {
-    nodes.push(
-      <Text key="ellipsis-end" color="gray" dimColor>
-        {" ..."}
-      </Text>,
-    );
-  }
+  const pointer = Math.max(0, inputText.length);
+  const pastChars = buildPastChars(targetText, inputText, pointer);
+  const futureChars = buildFutureChars(targetText, pointer);
 
   return (
     <Box width="100%" justifyContent="center">
-      <Text>{nodes}</Text>
+      <Text>{renderChars(pastChars, "past")}</Text>
+      <Text color={COLORS_ENABLED ? "yellow" : undefined} inverse bold>
+        |
+      </Text>
+      <Text>{renderChars(futureChars, "future")}</Text>
     </Box>
   );
 }

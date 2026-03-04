@@ -7,7 +7,9 @@
   "scripts": {
     "dev": "pnpm --filter @monkcli/cli dev",
     "build": "pnpm -r --if-present build",
-    "test": "vitest"
+    "test": "vitest",
+    "docker:build": "docker build -t monkcli:local .",
+    "docker:run": "docker run --rm -it monkcli:local"
   },
   "devDependencies": {
     "@types/node": "^25.3.3",

@@ -95,13 +95,21 @@ export class TypingSession {
     return typedLastWord === targetLastWord;
   }
 
+  private hasCompletedQuoteTarget(): boolean {
+    if (this.mode !== "quote") return false;
+    return this.inputText === this.targetText;
+  }
+
   shouldAutoFinish(now = Date.now()): boolean {
     if (this.isFinished) return false;
     if (this.mode === "time") {
       if (this.startedAt === undefined) return false;
       return this.getElapsedSeconds(now) >= this.durationSeconds;
     }
-    return this.hasCompletedWordTarget() || this.hasTypedFinalWordCorrectly();
+    if (this.mode === "words") {
+      return this.hasCompletedWordTarget() || this.hasTypedFinalWordCorrectly();
+    }
+    return this.hasCompletedQuoteTarget();
   }
 
   finish(now = Date.now()): void {
@@ -116,7 +124,7 @@ export class TypingSession {
       inputText: this.inputText,
       elapsedSeconds: this.getElapsedSeconds(now),
       accuracyCounts: this.accuracy,
-      includePartialLastWordInWpm: this.mode === "time",
+      includePartialLastWordInWpm: this.mode !== "words",
     });
   }
 

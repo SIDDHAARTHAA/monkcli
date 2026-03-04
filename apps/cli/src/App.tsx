@@ -36,15 +36,23 @@ export function App(): React.JSX.Element {
     }
 
     if (controller.phase === "menu") {
-      if (key.upArrow || key.leftArrow) {
-        controller.setMode("time");
+      if (key.upArrow) {
+        controller.moveMenuCursor(-1);
         return;
       }
-      if (key.downArrow || key.rightArrow) {
-        controller.setMode("words");
+      if (key.downArrow) {
+        controller.moveMenuCursor(1);
         return;
       }
-      if (key.return && controller.dictionarySize > 0) {
+      if (key.leftArrow) {
+        controller.adjustFocusedSetting(-1);
+        return;
+      }
+      if (key.rightArrow) {
+        controller.adjustFocusedSetting(1);
+        return;
+      }
+      if (key.return) {
         controller.startSession();
       }
       return;
@@ -102,11 +110,19 @@ export function App(): React.JSX.Element {
     return renderCentered(
       <MenuScreen
         language={controller.language}
+        availableLanguages={controller.availableLanguages}
         mode={controller.mode}
+        menuCursor={controller.menuCursor}
+        menuItemCount={controller.menuItemCount}
         timeTargetSeconds={controller.timeTargetSeconds}
+        timeTargetOptions={controller.timeTargetOptions}
         wordTarget={controller.wordTarget}
+        wordTargetOptions={controller.wordTargetOptions}
+        quoteCount={controller.quoteCount}
         dictionarySize={controller.dictionarySize}
         historyCount={controller.historyCount}
+        resultsFilePath={controller.resultsFilePath}
+        settingsFilePath={controller.settingsFilePath}
         engineDataDir={controller.engineDataDir}
       />,
     );
@@ -121,6 +137,7 @@ export function App(): React.JSX.Element {
       <ResultScreen
         result={controller.lastResult}
         historyCount={controller.historyCount}
+        resultsFilePath={controller.resultsFilePath}
       />,
     );
   }

@@ -1,4 +1,4 @@
-export type TestMode = "time" | "words";
+export type TestMode = "time" | "words" | "quote";
 
 export type TypingAccuracy = {
   correct: number;
@@ -54,4 +54,11 @@ export type TestResult = StatSnapshot & {
   targetText: string;
   inputText: string;
   completedAt: string;
+};
+
+export type UserSettings = {
+  language: string;
+  mode: TestMode;
+  wordTarget: number;
+  timeTargetSeconds: number;
 };

@@ -1,0 +1,13 @@
+services:
+  monkcli:
+    build: .
+    command: pnpm dev
+    stdin_open: true
+    tty: true
+    environment:
+      MONKCLI_ENGINE_DATA_DIR: /app/engine-data
+    volumes:
+      - monkcli_data:/root/.monkcli
+
+volumes:
+  monkcli_data:

@@ -1,0 +1,10 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./packages/contracts" },
+    { "path": "./packages/engine" },
+    { "path": "./packages/storage-local" },
+    { "path": "./apps/cli" }
+  ],
+  "exclude": ["engine-data", "node_modules"]
+}
