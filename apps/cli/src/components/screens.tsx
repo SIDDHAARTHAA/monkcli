@@ -2,8 +2,8 @@ import os from "node:os";
 import React from "react";
 import { Box, Text } from "ink";
 import type { TestMode, TestResult, StatSnapshot } from "@monkcli/contracts";
-import { COLORS_ENABLED, HIGH_CONTRAST } from "../theme";
-import { TargetTextView } from "./TargetTextView";
+import { COLORS_ENABLED, HIGH_CONTRAST } from "../theme.js";
+import { TargetTextView } from "./TargetTextView.js";
 
 function compactPath(filePath: string): string {
   const home = os.homedir();

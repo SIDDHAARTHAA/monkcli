@@ -1,5 +1,5 @@
 import type { SessionInit, StatSnapshot, TestResult, TypingAccuracy } from "@monkcli/contracts";
-import { calculateStats } from "./stats";
+import { calculateStats } from "./stats.js";
 
 export class TypingSession {
   readonly mode: SessionInit["mode"];

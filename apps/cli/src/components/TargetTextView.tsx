@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Text } from "ink";
-import { COLORS_ENABLED, HIGH_CONTRAST } from "../theme";
+import { COLORS_ENABLED, HIGH_CONTRAST } from "../theme.js";
 
 type StyledChar = {
   char: string;

@@ -3,11 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "bin": {
+    "monkcli": "./scripts/monkcli"
+  },
   "packageManager": "pnpm@10.28.1",
   "scripts": {
     "dev": "pnpm --filter @monkcli/cli dev",
     "build": "pnpm -r --if-present build",
     "test": "vitest",
+    "install:launcher": "bash ./scripts/install-launcher.sh",
+    "install:global": "bash ./scripts/install-launcher.sh",
     "docker:build": "docker build -t monkcli:local .",
     "docker:run": "docker run --rm -it monkcli:local"
   },

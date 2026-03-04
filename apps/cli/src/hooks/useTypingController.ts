@@ -21,8 +21,8 @@ import {
   TIME_MODE_WORD_POOL,
   TIME_TARGET_OPTIONS,
   WORD_TARGET_OPTIONS,
-} from "../config";
-import type { Phase } from "../types";
+} from "../config.js";
+import type { Phase } from "../types.js";
 
 const MODE_OPTIONS: TestMode[] = ["time", "words", "quote"];
 

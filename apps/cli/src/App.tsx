@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, useApp, useInput, useStdout } from "ink";
-import { useTypingController } from "./hooks/useTypingController";
+import { useTypingController } from "./hooks/useTypingController.js";
 import {
   ErrorScreen,
   LoadingScreen,
@@ -8,7 +8,7 @@ import {
   ResultScreen,
   RunningScreen,
   SavingScreen,
-} from "./components/screens";
+} from "./components/screens.js";
 
 export function App(): React.JSX.Element {
   const { exit } = useApp();

@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx src/index.tsx",
-    "build": "tsc -p tsconfig.json --noEmit"
+    "build": "tsc -p tsconfig.json"
   },
   "dependencies": {
     "@monkcli/contracts": "workspace:*",
