@@ -12,6 +12,8 @@
     "test": "vitest",
     "install:launcher": "node ./scripts/install-launcher.mjs",
     "install:global": "node ./scripts/install-launcher.mjs",
+    "uninstall:launcher": "node ./scripts/uninstall-launcher.mjs",
+    "uninstall:global": "node ./scripts/uninstall-launcher.mjs",
     "docker:build": "docker build -t monkcli:local .",
     "docker:run": "docker run --rm -it monkcli:local"
   },
