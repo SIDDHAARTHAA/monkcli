@@ -76,6 +76,28 @@ npm run install:global
 monkcli
 ```
 
+## Where Data Is Stored
+
+`monkcli` writes three files:
+- `results.json` (test history)
+- `stats.json` (running totals + average WPM/accuracy)
+- `settings.json` (saved language/mode/options)
+
+Default locations:
+
+- Linux:
+  - results/stats: `~/.local/state/monkcli/`
+  - settings: `~/.config/monkcli/`
+- macOS:
+  - results/stats/settings: `~/Library/Application Support/monkcli/`
+- Windows:
+  - results/stats: `%LOCALAPPDATA%\\monkcli\\`
+  - settings: `%APPDATA%\\monkcli\\`
+
+Overrides:
+- `MONKCLI_DATA_DIR` overrides results + stats directory.
+- `MONKCLI_CONFIG_DIR` overrides settings directory.
+
 ## Local Dev
 
 ```bash

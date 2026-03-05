@@ -121,8 +121,11 @@ export function App(): React.JSX.Element {
         quoteCount={controller.quoteCount}
         dictionarySize={controller.dictionarySize}
         historyCount={controller.historyCount}
+        averageWpm={controller.averageWpm}
+        averageAccuracy={controller.averageAccuracy}
         resultsFilePath={controller.resultsFilePath}
         settingsFilePath={controller.settingsFilePath}
+        statsFilePath={controller.statsFilePath}
         engineDataDir={controller.engineDataDir}
       />,
     );
@@ -137,6 +140,8 @@ export function App(): React.JSX.Element {
       <ResultScreen
         result={controller.lastResult}
         historyCount={controller.historyCount}
+        averageWpm={controller.averageWpm}
+        averageAccuracy={controller.averageAccuracy}
         resultsFilePath={controller.resultsFilePath}
       />,
     );

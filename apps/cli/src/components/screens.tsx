@@ -147,8 +147,11 @@ export function MenuScreen(props: {
   quoteCount: number;
   dictionarySize: number;
   historyCount: number;
+  averageWpm: number;
+  averageAccuracy: number;
   resultsFilePath: string;
   settingsFilePath: string;
+  statsFilePath: string;
   engineDataDir: string;
 }): React.JSX.Element {
   const {
@@ -164,8 +167,11 @@ export function MenuScreen(props: {
     quoteCount,
     dictionarySize,
     historyCount,
+    averageWpm,
+    averageAccuracy,
     resultsFilePath,
     settingsFilePath,
+    statsFilePath,
     engineDataDir,
   } = props;
 
@@ -178,10 +184,13 @@ export function MenuScreen(props: {
     <Box flexDirection="column" borderStyle="round" paddingX={1}>
       <RainbowTitle text="monkcli" />
       <Text>
-        history saved: {historyCount} | dictionary words: {dictionarySize} | quotes: {quoteCount}
+        history: {historyCount} | avg: {Math.round(averageWpm)} wpm,{" "}
+        {Math.round(averageAccuracy)}% acc | dictionary words: {dictionarySize} | quotes:{" "}
+        {quoteCount}
       </Text>
       <Text>
-        results: {compactPath(resultsFilePath)} | settings: {compactPath(settingsFilePath)}
+        results: {compactPath(resultsFilePath)} | stats: {compactPath(statsFilePath)} | settings:{" "}
+        {compactPath(settingsFilePath)}
       </Text>
       <Text> </Text>
 
@@ -219,9 +228,11 @@ export function MenuScreen(props: {
 export function ResultScreen(props: {
   result: TestResult;
   historyCount: number;
+  averageWpm: number;
+  averageAccuracy: number;
   resultsFilePath: string;
 }): React.JSX.Element {
-  const { result, historyCount, resultsFilePath } = props;
+  const { result, historyCount, averageWpm, averageAccuracy, resultsFilePath } = props;
 
   return (
     <Box flexDirection="column" borderStyle="round" paddingX={1}>
@@ -244,6 +255,9 @@ export function ResultScreen(props: {
       </Text>
       <Text>
         saved results: {historyCount} ({compactPath(resultsFilePath)})
+      </Text>
+      <Text>
+        average: {Math.round(averageWpm)} wpm | {Math.round(averageAccuracy)}% acc
       </Text>
       <RunningControls />
     </Box>

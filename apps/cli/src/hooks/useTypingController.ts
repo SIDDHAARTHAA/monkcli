@@ -8,11 +8,12 @@ import {
   loadQuoteTexts,
 } from "@monkcli/engine";
 import {
-  readStoredResults,
+  readStoredStats,
   readStoredSettings,
   resolveResultsFilePath,
   resolveSettingsFilePath,
-  saveResult,
+  resolveStatsFilePath,
+  saveResultAndUpdateStats,
   saveSettings,
 } from "@monkcli/storage-local";
 import {
@@ -90,6 +91,8 @@ export function useTypingController(): {
   quoteCount: number;
   dictionarySize: number;
   historyCount: number;
+  averageWpm: number;
+  averageAccuracy: number;
   errorMessage: string;
   lastResult: TestResult | null;
   progress: ReturnType<TypingSession["getProgress"]> | null;
@@ -101,6 +104,7 @@ export function useTypingController(): {
   engineDataDir: string;
   resultsFilePath: string;
   settingsFilePath: string;
+  statsFilePath: string;
   moveMenuCursor: (delta: number) => void;
   adjustFocusedSetting: (delta: number) => void;
   startSession: () => void;
@@ -128,6 +132,8 @@ export function useTypingController(): {
 
   const [lastResult, setLastResult] = useState<TestResult | null>(null);
   const [historyCount, setHistoryCount] = useState<number>(0);
+  const [averageWpm, setAverageWpm] = useState<number>(0);
+  const [averageAccuracy, setAverageAccuracy] = useState<number>(0);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   const [isBootstrapped, setIsBootstrapped] = useState(false);
@@ -135,6 +141,7 @@ export function useTypingController(): {
 
   const resultsFilePath = useMemo(() => resolveResultsFilePath(), []);
   const settingsFilePath = useMemo(() => resolveSettingsFilePath(), []);
+  const statsFilePath = useMemo(() => resolveStatsFilePath(), []);
 
   const menuItemCount = mode === "quote" ? 2 : 3;
 
@@ -143,9 +150,9 @@ export function useTypingController(): {
 
     const bootstrap = async (): Promise<void> => {
       try {
-        const [languages, history, storedSettings, loadedQuotes] = await Promise.all([
+        const [languages, stats, storedSettings, loadedQuotes] = await Promise.all([
           listAvailableLanguages({ engineDataDir: ENGINE_DATA_DIR }),
-          readStoredResults(),
+          readStoredStats(),
           readStoredSettings(DEFAULT_SETTINGS),
           loadQuoteTexts("english", { engineDataDir: ENGINE_DATA_DIR }).catch(() => []),
         ]);
@@ -196,7 +203,9 @@ export function useTypingController(): {
         setWordTarget(normalized.wordTarget);
         setTimeTargetSeconds(normalized.timeTargetSeconds);
 
-        setHistoryCount(history.length);
+        setHistoryCount(stats.totalTests);
+        setAverageWpm(stats.averageWpm);
+        setAverageAccuracy(stats.averageAccuracy);
         setPhase("menu");
         setIsBootstrapped(true);
       } catch (error) {
@@ -325,8 +334,10 @@ export function useTypingController(): {
 
     try {
       const result = session.buildResult(Date.now());
-      await saveResult(result);
-      setHistoryCount((prev) => prev + 1);
+      const nextStats = await saveResultAndUpdateStats(result);
+      setHistoryCount(nextStats.totalTests);
+      setAverageWpm(nextStats.averageWpm);
+      setAverageAccuracy(nextStats.averageAccuracy);
       setLastResult(result);
       setPhase("result");
     } catch (error) {
@@ -410,6 +421,8 @@ export function useTypingController(): {
     quoteCount: quotes.length,
     dictionarySize,
     historyCount,
+    averageWpm,
+    averageAccuracy,
     errorMessage,
     lastResult,
     progress,
@@ -421,6 +434,7 @@ export function useTypingController(): {
     engineDataDir: ENGINE_DATA_DIR,
     resultsFilePath,
     settingsFilePath,
+    statsFilePath,
     moveMenuCursor,
     adjustFocusedSetting,
     startSession,
