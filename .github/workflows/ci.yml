@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package.json
+            apps/cli/package.json
+            packages/contracts/package.json
+            packages/engine/package.json
+            packages/storage-local/package.json
+
+      - name: Install Dependencies
+        run: |
+          npm install --no-package-lock --legacy-peer-deps
+          npm --prefix ./packages/contracts install --no-package-lock --legacy-peer-deps
+          npm --prefix ./packages/engine install --no-package-lock --legacy-peer-deps
+          npm --prefix ./packages/storage-local install --no-package-lock --legacy-peer-deps
+          npm --prefix ./apps/cli install --no-package-lock --legacy-peer-deps
+
+      - name: Build
+        run: npm run build
