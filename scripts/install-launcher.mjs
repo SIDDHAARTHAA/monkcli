@@ -9,7 +9,7 @@ import { spawnSync } from "node:child_process";
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoDir = path.resolve(scriptDir, "..");
 const customPrefix = process.env.MONKCLI_NPM_PREFIX?.trim() || "";
-const defaultUnixPrefix = process.platform === "win32" ? "" : path.join(os.homedir(), ".local");
+const defaultUnixPrefix = process.platform === "linux" ? path.join(os.homedir(), ".local") : "";
 const targetPrefix = customPrefix || defaultUnixPrefix;
 
 const installTargets = [

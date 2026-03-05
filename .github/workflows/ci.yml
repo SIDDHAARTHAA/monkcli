@@ -35,3 +35,54 @@ jobs:
 
       - name: Build
         run: npm run build
+
+  install-smoke:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package.json
+            apps/cli/package.json
+            packages/contracts/package.json
+            packages/engine/package.json
+            packages/storage-local/package.json
+
+      - name: Install Globally (Repo Link)
+        env:
+          MONKCLI_NPM_PREFIX: ${{ github.workspace }}/.npm-global
+        run: npm run install:global
+
+      - name: Verify Binary (Unix)
+        if: runner.os != 'Windows'
+        shell: bash
+        env:
+          MONKCLI_NPM_PREFIX: ${{ github.workspace }}/.npm-global
+        run: |
+          test -x "$MONKCLI_NPM_PREFIX/bin/monkcli"
+          echo "monkcli binary found at $MONKCLI_NPM_PREFIX/bin/monkcli"
+
+      - name: Verify Binary (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        env:
+          MONKCLI_NPM_PREFIX: ${{ github.workspace }}/.npm-global
+        run: |
+          $binary = Join-Path $env:MONKCLI_NPM_PREFIX "monkcli.cmd"
+          if (!(Test-Path $binary)) {
+            Write-Error "monkcli.cmd not found"
+            exit 1
+          }
+          Write-Host "monkcli binary found at $binary"
