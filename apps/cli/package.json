@@ -7,9 +7,9 @@
     "build": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@monkcli/contracts": "workspace:*",
-    "@monkcli/engine": "workspace:*",
-    "@monkcli/storage-local": "workspace:*",
+    "@monkcli/contracts": "file:../../packages/contracts",
+    "@monkcli/engine": "file:../../packages/engine",
+    "@monkcli/storage-local": "file:../../packages/storage-local",
     "ink": "^6.8.0",
     "react": "^19.2.4"
   },

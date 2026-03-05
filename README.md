@@ -5,22 +5,16 @@ CLI typing test inspired by Monkeytype.
 ## Local Dev
 
 ```bash
-pnpm install
-pnpm dev
+npm install
+npm run dev
 ```
 
-## Global CLI (Like Standard Node CLIs)
+## Global CLI (Cross-Platform)
 
-Install globally from this cloned repo:
-
-```bash
-bash ./scripts/install-launcher.sh
-```
-
-Or:
+If you cloned this repo, install globally with only Node.js + npm:
 
 ```bash
-pnpm run install:global
+npm run install:global
 ```
 
 Then run from anywhere:
@@ -30,13 +24,18 @@ monkcli
 ```
 
 How it works:
-- Runs `pnpm install` + `pnpm build` once.
-- Registers `monkcli` globally via `npm link --prefix ~/.local`.
-- Global command points to `scripts/monkcli`, which runs built JS directly via Node.
+- Uses only `node` + `npm` (no `pnpm` required for users).
+- Installs dependencies and builds packages.
+- Registers `monkcli` globally via `npm link` (defaults to `~/.local` prefix on Linux/macOS).
+- The global command executes `bin/monkcli.mjs` (Node launcher).
+
+Optional:
+
+```bash
+MONKCLI_NPM_PREFIX="$HOME/.local" npm run install:global
+```
 
 ## Docker (Optional)
-
-Docker is still available, but optional:
 
 ```bash
 docker build -t monkcli:local .

@@ -1,39 +1,5 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Resolve symlinks so this works when invoked via a global link.
-SCRIPT_SOURCE="${BASH_SOURCE[0]}"
-while [[ -h "${SCRIPT_SOURCE}" ]]; do
-  SCRIPT_DIR="$(cd -P -- "$(dirname -- "${SCRIPT_SOURCE}")" && pwd)"
-  SCRIPT_SOURCE="$(readlink -- "${SCRIPT_SOURCE}")"
-  if [[ "${SCRIPT_SOURCE}" != /* ]]; then
-    SCRIPT_SOURCE="${SCRIPT_DIR}/${SCRIPT_SOURCE}"
-  fi
-done
-SCRIPT_DIR="$(cd -P -- "$(dirname -- "${SCRIPT_SOURCE}")" && pwd)"
-REPO_DIR="$(cd -- "${SCRIPT_DIR}/.." && pwd)"
-ENTRYPOINT="${REPO_DIR}/apps/cli/dist/index.js"
-
-if ! command -v node >/dev/null 2>&1; then
-  echo "Error: Node.js is required to run monkcli." >&2
-  exit 1
-fi
-
-if [[ ! -f "${ENTRYPOINT}" ]]; then
-  cat >&2 <<MSG
-Error: monkcli is not built yet.
-
-Run this once from the repo root:
-  bash ./scripts/install-launcher.sh
-
-Or manually:
-  pnpm install
-  pnpm build
-MSG
-  exit 1
-fi
-
-# Keep engine-data resolution stable even when run outside the repo directory.
-export MONKCLI_ENGINE_DATA_DIR="${MONKCLI_ENGINE_DATA_DIR:-${REPO_DIR}/engine-data}"
-
-exec node "${ENTRYPOINT}" "$@"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+exec node "${SCRIPT_DIR}/../bin/monkcli.mjs" "$@"

@@ -4,15 +4,14 @@
   "private": true,
   "type": "module",
   "bin": {
-    "monkcli": "./scripts/monkcli"
+    "monkcli": "./bin/monkcli.mjs"
   },
-  "packageManager": "pnpm@10.28.1",
   "scripts": {
-    "dev": "pnpm --filter @monkcli/cli dev",
-    "build": "pnpm -r --if-present build",
+    "dev": "npm --prefix ./apps/cli run dev",
+    "build": "node ./scripts/build-all.mjs",
     "test": "vitest",
-    "install:launcher": "bash ./scripts/install-launcher.sh",
-    "install:global": "bash ./scripts/install-launcher.sh",
+    "install:launcher": "node ./scripts/install-launcher.mjs",
+    "install:global": "node ./scripts/install-launcher.mjs",
     "docker:build": "docker build -t monkcli:local .",
     "docker:run": "docker run --rm -it monkcli:local"
   },
