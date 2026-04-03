@@ -30,7 +30,7 @@ export function App(): React.JSX.Element {
   );
 
   useInput((input, key) => {
-    if ((key.ctrl && input === "c") || input === "q") {
+    if (key.ctrl && input === "c") {
       exit();
       return;
     }

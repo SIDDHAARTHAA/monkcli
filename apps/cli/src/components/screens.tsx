@@ -102,7 +102,7 @@ function KeyTag(props: {
 function MenuControls(): React.JSX.Element {
   return (
     <Text>
-      <KeyTag label="↑/↓" tone="primary" /> move row | <KeyTag label="←/→" tone="primary" /> change value | <KeyTag label="Enter" tone="success" /> start | <KeyTag label="q" tone="danger" /> quit
+      <KeyTag label="↑/↓" tone="primary" /> move row | <KeyTag label="←/→" tone="primary" /> change value | <KeyTag label="Enter" tone="success" /> start | <KeyTag label="Ctrl+C" tone="danger" /> quit
     </Text>
   );
 }
@@ -110,7 +110,7 @@ function MenuControls(): React.JSX.Element {
 function RunningControls(): React.JSX.Element {
   return (
     <Text>
-      <KeyTag label="Tab" tone="primary" /> new test | <KeyTag label="Enter" tone="success" /> menu | <KeyTag label="q" tone="danger" /> quit
+      <KeyTag label="Tab" tone="primary" /> new test | <KeyTag label="Enter" tone="success" /> menu | <KeyTag label="Ctrl+C" tone="danger" /> quit
     </Text>
   );
 }
@@ -128,7 +128,7 @@ export function ErrorScreen(props: { errorMessage: string }): React.JSX.Element 
     <Box flexDirection="column">
       <Text color="red">Error: {props.errorMessage}</Text>
       <Text>
-        <KeyTag label="Enter" tone="success" /> menu | <KeyTag label="q" tone="danger" /> quit
+        <KeyTag label="Enter" tone="success" /> menu | <KeyTag label="Ctrl+C" tone="danger" /> quit
       </Text>
     </Box>
   );
