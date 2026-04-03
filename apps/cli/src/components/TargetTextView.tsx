@@ -4,7 +4,7 @@ import { COLORS_ENABLED, HIGH_CONTRAST } from "../theme.js";
 
 type StyledChar = {
   char: string;
-  color?: "green" | "red" | "cyan" | "gray";
+  color?: "green" | "red" | "cyan" | "gray" | "white" | "yellow";
   dimColor?: boolean;
   bold?: boolean;
   inverse?: boolean;
@@ -34,8 +34,8 @@ function styleIncorrect(char: string): StyledChar {
 function styleUpcoming(char: string): StyledChar {
   return {
     char,
-    color: COLORS_ENABLED ? "gray" : undefined,
-    dimColor: !HIGH_CONTRAST,
+    color: COLORS_ENABLED ? "white" : undefined,
+    dimColor: false,
     bold: false,
   };
 }
@@ -43,9 +43,10 @@ function styleUpcoming(char: string): StyledChar {
 function styleCurrent(char: string): StyledChar {
   return {
     char,
-    color: COLORS_ENABLED ? "cyan" : undefined,
+    color: COLORS_ENABLED ? "yellow" : undefined,
     bold: true,
-    underline: HIGH_CONTRAST,
+    inverse: true,
+    underline: true,
   };
 }
 
@@ -70,7 +71,7 @@ function buildPastChars(targetText: string, inputText: string, pointer: number):
     visible[0] = {
       char: "…",
       color: COLORS_ENABLED ? "gray" : undefined,
-      dimColor: !HIGH_CONTRAST,
+      dimColor: false,
       bold: HIGH_CONTRAST,
     };
   }
@@ -95,7 +96,7 @@ function buildFutureChars(targetText: string, pointer: number): StyledChar[] {
     visible[visible.length - 1] = {
       char: "…",
       color: COLORS_ENABLED ? "gray" : undefined,
-      dimColor: !HIGH_CONTRAST,
+      dimColor: false,
       bold: HIGH_CONTRAST,
     };
   }
