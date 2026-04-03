@@ -18,23 +18,16 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: |
-            package.json
-            apps/cli/package.json
-            packages/contracts/package.json
-            packages/engine/package.json
-            packages/storage-local/package.json
+          cache-dependency-path: package-lock.json
 
       - name: Install Dependencies
-        run: |
-          npm install --no-package-lock --legacy-peer-deps
-          npm --prefix ./packages/contracts install --no-package-lock --legacy-peer-deps
-          npm --prefix ./packages/engine install --no-package-lock --legacy-peer-deps
-          npm --prefix ./packages/storage-local install --no-package-lock --legacy-peer-deps
-          npm --prefix ./apps/cli install --no-package-lock --legacy-peer-deps
+        run: npm ci
 
       - name: Build
         run: npm run build
+
+      - name: Pack
+        run: npm pack
 
   install-smoke:
     runs-on: ${{ matrix.os }}
@@ -53,36 +46,36 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: |
-            package.json
-            apps/cli/package.json
-            packages/contracts/package.json
-            packages/engine/package.json
-            packages/storage-local/package.json
+          cache-dependency-path: package-lock.json
 
-      - name: Install Globally (Repo Link)
-        env:
-          MONKCLI_NPM_PREFIX: ${{ github.workspace }}/.npm-global
-        run: npm run install:global
+      - name: Install Dependencies
+        run: npm ci
 
-      - name: Verify Binary (Unix)
+      - name: Pack
+        run: npm pack
+
+      - name: Install Tarball (Unix)
         if: runner.os != 'Windows'
         shell: bash
         env:
-          MONKCLI_NPM_PREFIX: ${{ github.workspace }}/.npm-global
+          MONKCLI_PREFIX: ${{ github.workspace }}/.npm-global
         run: |
-          test -x "$MONKCLI_NPM_PREFIX/bin/monkcli"
-          echo "monkcli binary found at $MONKCLI_NPM_PREFIX/bin/monkcli"
+          TARBALL="$(find . -maxdepth 1 -name '*.tgz' | head -n 1)"
+          npm install -g "$TARBALL" --prefix "$MONKCLI_PREFIX"
+          test -x "$MONKCLI_PREFIX/bin/monkcli"
+          "$MONKCLI_PREFIX/bin/monkcli" --version
 
-      - name: Verify Binary (Windows)
+      - name: Install Tarball (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
         env:
-          MONKCLI_NPM_PREFIX: ${{ github.workspace }}/.npm-global
+          MONKCLI_PREFIX: ${{ github.workspace }}\.npm-global
         run: |
-          $binary = Join-Path $env:MONKCLI_NPM_PREFIX "monkcli.cmd"
+          $tarball = Get-ChildItem -Filter *.tgz | Select-Object -First 1
+          npm install -g $tarball.FullName --prefix $env:MONKCLI_PREFIX
+          $binary = Join-Path $env:MONKCLI_PREFIX "monkcli.cmd"
           if (!(Test-Path $binary)) {
             Write-Error "monkcli.cmd not found"
             exit 1
           }
-          Write-Host "monkcli binary found at $binary"
+          & $binary --version

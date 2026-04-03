@@ -3,6 +3,12 @@
     "target": "ES2022",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
+    "baseUrl": ".",
+    "paths": {
+      "@monkcli/contracts": ["packages/contracts/src/index.ts"],
+      "@monkcli/engine": ["packages/engine/src/index.ts"],
+      "@monkcli/storage-local": ["packages/storage-local/src/index.ts"]
+    },
     "strict": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,

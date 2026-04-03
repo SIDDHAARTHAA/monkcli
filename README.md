@@ -7,74 +7,60 @@ CLI typing test inspired by Monkeytype.
 - Node.js 20+
 - npm
 
-## Install (Simple)
+## Install
 
-From repo root:
+### npm
 
 ```bash
-npm run install:global
+npm install -g @siddhaartha_bs/monkcli
 monkcli
 ```
 
-## If Install Fails (Permissions/PATH)
-
-### Linux / macOS
-
-Use user-local prefix:
+### npx
 
 ```bash
-MONKCLI_NPM_PREFIX="$HOME/.local" npm run install:global
+npx @siddhaartha_bs/monkcli
 ```
 
-If `monkcli` is not found:
+## Upgrade
 
 ```bash
-echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
-# for zsh use ~/.zshrc instead
-source ~/.bashrc
-```
-
-### Windows (PowerShell)
-
-```powershell
-$env:MONKCLI_NPM_PREFIX = "$HOME\\AppData\\Local\\monkcli-npm"
-npm run install:global
-$env:Path = "$env:MONKCLI_NPM_PREFIX;$env:Path"
-monkcli
+npm install -g @siddhaartha_bs/monkcli@latest
 ```
 
 ## Uninstall
 
-From repo root:
+```bash
+npm uninstall -g @siddhaartha_bs/monkcli
+```
+
+## Source Development
 
 ```bash
-npm run uninstall:global
+npm install
+npm run build
+node ./bin/monkcli.mjs
 ```
 
-If you installed with custom prefix, use the same prefix while uninstalling.
-
-Linux/macOS:
+For interactive local development without a full rebuild:
 
 ```bash
-MONKCLI_NPM_PREFIX="$HOME/.local" npm run uninstall:global
+npm run dev
 ```
 
-Windows (PowerShell):
+## If `monkcli` Is Not Found
 
-```powershell
-$env:MONKCLI_NPM_PREFIX = "$HOME\\AppData\\Local\\monkcli-npm"
-npm run uninstall:global
-```
-
-## Reinstall Cleanly
-
-From repo root:
+This is usually a PATH issue with your npm global bin directory.
 
 ```bash
-npm run uninstall:global
-npm run install:global
-monkcli
+npm prefix -g
 ```
+
+Make sure the corresponding bin directory is on your PATH:
+
+- Linux: `$(npm prefix -g)/bin`
+- macOS: `$(npm prefix -g)/bin`
+- Windows: the prefix directory reported by `npm prefix -g`
 
 ## Where Data Is Stored
 
@@ -97,13 +83,6 @@ Default locations:
 Overrides:
 - `MONKCLI_DATA_DIR` overrides results + stats directory.
 - `MONKCLI_CONFIG_DIR` overrides settings directory.
-
-## Local Dev
-
-```bash
-npm install
-npm run dev
-```
 
 ## Docker (Optional)
 

@@ -1,24 +1,39 @@
 {
-  "name": "monkcli",
+  "name": "@siddhaartha_bs/monkcli",
   "version": "0.1.0",
-  "private": true,
+  "description": "CLI typing test inspired by Monkeytype.",
   "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
   "bin": {
     "monkcli": "./bin/monkcli.mjs"
   },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "bin",
+    "dist",
+    "engine-data/frontend/static",
+    "README.md"
+  ],
+  "dependencies": {
+    "ink": "^6.8.0",
+    "react": "^19.2.4"
+  },
   "scripts": {
-    "dev": "npm --prefix ./apps/cli run dev",
-    "build": "node ./scripts/build-all.mjs",
+    "dev": "tsx --tsconfig ./apps/cli/tsconfig.json ./apps/cli/src/index.tsx",
+    "build": "node ./scripts/build-package.mjs",
+    "prepack": "npm run build",
     "test": "vitest",
-    "install:launcher": "node ./scripts/install-launcher.mjs",
-    "install:global": "node ./scripts/install-launcher.mjs",
-    "uninstall:launcher": "node ./scripts/uninstall-launcher.mjs",
-    "uninstall:global": "node ./scripts/uninstall-launcher.mjs",
     "docker:build": "docker build -t monkcli:local .",
     "docker:run": "docker run --rm -it monkcli:local"
   },
   "devDependencies": {
     "@types/node": "^25.3.3",
+    "@types/react": "^19.2.14",
+    "esbuild": "^0.25.9",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "vitest": "^4.0.18"
