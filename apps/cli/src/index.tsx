@@ -1,4 +1,7 @@
 import { render } from "ink";
 import { App } from "./App.js";
 
-render(<App />);
+const instance = render(<App />);
+
+await instance.waitUntilExit();
+instance.clear();

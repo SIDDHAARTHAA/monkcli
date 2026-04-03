@@ -80,32 +80,6 @@ For interactive local development without a full rebuild:
 npm run dev
 ```
 
-## Release Workflow
-
-This repo uses Changesets, so normal commits do not publish a new npm release.
-
-For a release-worthy change:
-
-```bash
-npm run changeset
-```
-
-Commit the generated file in `.changeset/` with your code changes.
-
-The GitHub release workflow will then:
-
-1. open or update a release PR on `main`
-2. bump `package.json` and `package-lock.json`
-3. publish to npm when that release PR is merged
-
-Useful maintainer commands:
-
-```bash
-npm run changeset
-npm run version-packages
-npm run release
-```
-
 ## If `monkcli` Is Not Found
 
 This is usually a PATH issue with your npm global bin directory.
