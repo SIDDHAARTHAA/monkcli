@@ -16,6 +16,22 @@ npm install -g @siddhaartha_bs/monkcli
 monkcli
 ```
 
+If your npm global install tries to write to a system directory and asks for `sudo`,
+prefer a user-local npm prefix instead of installing with elevated privileges:
+
+```bash
+mkdir -p "$HOME/.local"
+npm config set prefix "$HOME/.local"
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+Then install again:
+
+```bash
+npm install -g @siddhaartha_bs/monkcli
+```
+
 ### npx
 
 ```bash
@@ -26,6 +42,22 @@ npx @siddhaartha_bs/monkcli
 
 ```bash
 npm install -g @siddhaartha_bs/monkcli@latest
+```
+
+`@latest` means the latest version published to npm, not the latest local commits on `main`.
+
+## Check Version
+
+Check the installed CLI version:
+
+```bash
+monkcli --version
+```
+
+Check the latest published npm version:
+
+```bash
+npm view @siddhaartha_bs/monkcli version
 ```
 
 ## Uninstall
@@ -46,6 +78,32 @@ For interactive local development without a full rebuild:
 
 ```bash
 npm run dev
+```
+
+## Release Workflow
+
+This repo uses Changesets, so normal commits do not publish a new npm release.
+
+For a release-worthy change:
+
+```bash
+npm run changeset
+```
+
+Commit the generated file in `.changeset/` with your code changes.
+
+The GitHub release workflow will then:
+
+1. open or update a release PR on `main`
+2. bump `package.json` and `package-lock.json`
+3. publish to npm when that release PR is merged
+
+Useful maintainer commands:
+
+```bash
+npm run changeset
+npm run version-packages
+npm run release
 ```
 
 ## If `monkcli` Is Not Found

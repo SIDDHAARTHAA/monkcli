@@ -23,14 +23,18 @@
     "react": "^19.2.4"
   },
   "scripts": {
+    "changeset": "changeset",
     "dev": "tsx --tsconfig ./apps/cli/tsconfig.json ./apps/cli/src/index.tsx",
     "build": "node ./scripts/build-package.mjs",
     "prepack": "npm run build",
+    "version-packages": "changeset version && npm install --package-lock-only --ignore-scripts",
+    "release": "npm run build && changeset publish",
     "test": "vitest",
     "docker:build": "docker build -t monkcli:local .",
     "docker:run": "docker run --rm -it monkcli:local"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.30.0",
     "@types/node": "^25.3.3",
     "@types/react": "^19.2.14",
     "esbuild": "^0.25.9",
