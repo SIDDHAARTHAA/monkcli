@@ -1,6 +1,6 @@
 {
   "name": "@siddhaartha_bs/monkcli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "CLI typing test inspired by Monkeytype.",
   "type": "module",
   "engines": {
