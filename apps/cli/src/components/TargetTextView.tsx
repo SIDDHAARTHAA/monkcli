@@ -43,10 +43,9 @@ function styleUpcoming(char: string): StyledChar {
 function styleCurrent(char: string): StyledChar {
   return {
     char,
-    color: COLORS_ENABLED ? "yellow" : undefined,
+    color: COLORS_ENABLED ? "cyan" : undefined,
     bold: true,
-    inverse: true,
-    underline: true,
+    underline: HIGH_CONTRAST,
   };
 }
 
